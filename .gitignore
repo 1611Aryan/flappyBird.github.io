@@ -1,0 +1,4 @@
+# Ignore SASS config files
+.sass-cache
+#ignore ts
+.ts
