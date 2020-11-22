@@ -125,7 +125,7 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-window.addEventListener('touch', (e) => {
+window.addEventListener('touchend', (e) => {
     bird.jump();
 });
 
@@ -140,7 +140,6 @@ const newPipe = () => {
 
 const deletePipeFunc = () => {
     pipes.shift();
-    console.log(pipes.length);
 };
 
 function animate() {

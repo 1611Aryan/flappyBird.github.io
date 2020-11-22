@@ -106,7 +106,7 @@ window.addEventListener('keydown', (e) => {
         bird.jump();
     }
 });
-window.addEventListener('touch', (e) => {
+window.addEventListener('touchend', (e) => {
     bird.jump();
 });
 let numOfPipes = 1;
@@ -118,7 +118,6 @@ const newPipe = () => {
 };
 const deletePipeFunc = () => {
     pipes.shift();
-    console.log(pipes.length);
 };
 function animate() {
     requestAnimationFrame(animate);
