@@ -96,9 +96,11 @@ const pipe = new Pipe();
 pipes.push(pipe);
 window.addEventListener('keydown', (e) => {
     if (e.key == " " || e.key == 'ArrowUp') {
-        console.log('hi');
         bird.jump();
     }
+});
+window.addEventListener('touch', (e) => {
+    bird.jump();
 });
 let numOfPipes = 1;
 //?Inserts the next pipe
