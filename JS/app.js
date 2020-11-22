@@ -14,9 +14,16 @@ const Bird = function () {
     this.x = (window.innerWidth) * 15 / 100;
     this.y = (window.innerHeight) / 2;
     this.radius = 40;
+    if (window.innerHeight < 700) {
+        this.radius = 30;
+    }
+    if (window.innerHeight < 400) {
+        this.radius = 20;
+    }
     this.color = "navy";
     //?g is used for gravity
     this.g = 3;
+    this.jumpValue = 50;
     this.render = () => {
         //?A circle is drawn
         c.beginPath();
@@ -37,7 +44,7 @@ const Bird = function () {
     };
     this.jump = () => {
         //?the ball jumps up
-        this.y -= 50;
+        this.y -= this.jumpValue;
         this.render();
     };
 };

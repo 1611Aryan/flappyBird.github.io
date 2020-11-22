@@ -5,18 +5,30 @@ const c = canvas.getContext('2d');
 //?If insert is 1 a new pipe is inserted
 let insert = 0;
 let deletePipe = 0;
+
 window.addEventListener('resize', () => {
     location.reload();
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 });
+
+
+
 const Bird = function () {
     this.x = (window.innerWidth) * 15 / 100;
     this.y = (window.innerHeight) / 2;
     this.radius = 40;
+    if (window.innerHeight < 700) {
+        this.radius = 30;
+    }
+    if (window.innerHeight < 400) {
+        this.radius = 20;
+    }
     this.color = "navy";
     //?g is used for gravity
     this.g = 3;
+    this.jumpValue = 50;
+
     this.render = () => {
         //?A circle is drawn
         c.beginPath();
@@ -25,6 +37,7 @@ const Bird = function () {
         c.fill();
         c.closePath();
     };
+
     this.gravity = () => {
         //?the bird falls down
         if (this.y + this.radius >= window.innerHeight) {
@@ -35,12 +48,15 @@ const Bird = function () {
         }
         this.render();
     };
+
     this.jump = () => {
         //?the ball jumps up
-        this.y -= 50;
+        this.y -= this.jumpValue;
         this.render();
     };
+
 };
+
 const Pipe = function () {
     this.width = window.innerWidth / 10;
     this.x = window.innerWidth - this.width;
@@ -48,15 +64,18 @@ const Pipe = function () {
     this.gap = window.innerHeight / 3;
     this.speed = 8;
     this.color = "green";
+
     this.dimension = () => {
         //?Calculates the height of the pipes
         this.height1 = (window.innerHeight - this.gap) / ((Math.random() * 2) + 1);
         this.height2 = (window.innerHeight - this.gap) - this.height1;
     };
+
     this.init = () => {
         //?sets the height of the pipes
         this.dimension();
     };
+
     this.render = () => {
         //?top pipe
         c.beginPath();
@@ -71,6 +90,7 @@ const Pipe = function () {
         c.fill();
         c.closePath();
     };
+
     this.move = () => {
         //?y cordinate remains same x cordinate is changed
         if (this.x <= window.innerWidth / 2 + this.speed / 2 && this.x >= window.innerWidth / 2 - this.speed / 2) {
@@ -84,45 +104,58 @@ const Pipe = function () {
         this.x -= this.speed;
         this.render();
     };
+
     this.init();
     this.render();
 };
+
 //?The bird is created
 const bird = new Bird();
 //?Array which holds the pipes is created
+
 const pipes = [];
 //?first pipe is created and pushed into the array;
 const pipe = new Pipe();
 pipes.push(pipe);
+
+
 window.addEventListener('keydown', (e) => {
     if (e.key == " " || e.key == 'ArrowUp') {
         bird.jump();
     }
 });
+
 window.addEventListener('touch', (e) => {
     bird.jump();
 });
+
 let numOfPipes = 1;
+
 //?Inserts the next pipe
 const newPipe = () => {
     let pipe = new Pipe();
     pipes.push(pipe);
     numOfPipes++;
 };
+
 const deletePipeFunc = () => {
     pipes.shift();
     console.log(pipes.length);
 };
+
 function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
     bird.gravity();
+
     for (var i = 0; i < numOfPipes; i++) {
         pipes[i].move();
+
         if (insert == 1) {
             newPipe();
             insert = 0;
         }
+
         if (deletePipe == 1) {
             deletePipeFunc();
             numOfPipes--;
@@ -130,4 +163,5 @@ function animate() {
         }
     }
 }
+
 animate();
