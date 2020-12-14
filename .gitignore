@@ -1,4 +1,4 @@
-# Ignore SASS config files
-.sass-cache
-#ignore ts
-.ts
+
+*.scss
+*.css.map
+*.ts

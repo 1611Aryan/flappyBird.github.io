@@ -5,95 +5,150 @@ const c = canvas.getContext('2d');
 //?If insert is 1 a new pipe is inserted
 let insert = 0;
 let deletePipe = 0;
+let stopGame = 0;
+let array1 = [];
+let array2 = [];
 window.addEventListener('resize', () => {
     location.reload();
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 });
-const Bird = function () {
-    this.x = (window.innerWidth) * 15 / 100;
-    this.y = (window.innerHeight) / 2;
-    this.radius = 40;
-    if (window.innerHeight < 700) {
-        this.radius = 30;
-    }
-    if (window.innerHeight < 400) {
-        this.radius = 20;
-    }
-    this.color = "navy";
-    //?g is used for gravity
-    this.g = 3;
-    this.jumpValue = 50;
-    this.render = () => {
-        //?A circle is drawn
-        c.beginPath();
-        c.arc(this.x, this.y, this.radius, 0, (Math.PI) * 2, false);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    };
-    this.gravity = () => {
-        //?the bird falls down
-        if (this.y + this.radius >= window.innerHeight) {
-            this.y = this.radius;
-        }
-        else {
+const mouse = {
+    x: null,
+    y: null
+};
+window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+class Bird {
+    constructor() {
+        this.render = () => {
+            //?A circle is drawn
+            c.beginPath();
+            c.arc(this.x, this.y, this.radius, 0, (Math.PI) * 2, false);
+            c.fillStyle = this.color;
+            c.fill();
+            c.closePath();
+        };
+        this.gravity = () => {
+            //*the bird falls down
+            // ?Dev purpose
+            //this.y = mouse.y;
+            this.g += this.diffucultyFactor;
             this.y += this.g;
+            this.render();
+            if (this.y + this.radius >= window.innerHeight || this.y - this.radius <= 0) {
+                stopGame = 1;
+            }
+        };
+        this.jump = () => {
+            //?the ball jumps up
+            if (this.stop) {
+                this.y -= this.jumpValue;
+                this.render();
+            }
+        };
+        this.stopGame = () => {
+            this.stop = false;
+        };
+        this.x = (window.innerWidth) * 15 / 100;
+        this.y = (window.innerHeight) / 2;
+        this.radius = 40;
+        if (window.innerHeight < 700) {
+            this.radius = 30;
         }
-        this.render();
-    };
-    this.jump = () => {
-        //?the ball jumps up
-        this.y -= this.jumpValue;
-        this.render();
-    };
-};
-const Pipe = function () {
-    this.width = window.innerWidth / 10;
-    this.x = window.innerWidth - this.width;
-    this.y = 0;
-    this.gap = window.innerHeight / 3;
-    this.speed = 8;
-    this.color = "green";
-    this.dimension = () => {
-        //?Calculates the height of the pipes
-        this.height1 = (window.innerHeight - this.gap) / ((Math.random() * 2) + 1);
-        this.height2 = (window.innerHeight - this.gap) - this.height1;
-    };
-    this.init = () => {
-        //?sets the height of the pipes
-        this.dimension();
-    };
-    this.render = () => {
-        //?top pipe
-        c.beginPath();
-        c.rect(this.x, this.y, this.width, this.height1);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-        //?bottom pipe
-        c.beginPath();
-        c.rect(this.x, window.innerHeight - this.height2, this.width, this.height2);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    };
-    this.move = () => {
-        //?y cordinate remains same x cordinate is changed
-        if (this.x <= window.innerWidth / 2 + this.speed / 2 && this.x >= window.innerWidth / 2 - this.speed / 2) {
-            //?when the pipe crosses the center a new pipe is added
-            //?+5 and -5 are added because the x cordinate is decremented in intervals of the value of speed
-            insert = 1;
+        if (window.innerHeight < 400) {
+            this.radius = 20;
         }
-        if ((this.x + this.width) + window.innerWidth < 0) {
-            deletePipe = 1;
-        }
-        this.x -= this.speed;
+        this.color = "navy";
+        //?g is used for gravity
+        this.g = 2;
+        this.diffucultyFactor = 0.0005;
+        // this.g = 0;
+        this.jumpValue = 60;
+        this.stop = true;
+    }
+}
+class Pipe {
+    constructor() {
+        this.dimension = () => {
+            //?Calculates the height of the pipes
+            this.height1 = (window.innerHeight - this.gap) / ((Math.random() * 2) + 1);
+            this.height2 = (window.innerHeight - this.gap) - this.height1;
+            array1.push(this.height1);
+            array2.push(this.height2);
+            // this.counter++;
+            if (array1[array1.length - 2] && array2[array2.length - 2]) {
+                this.posY1 = array1[array1.length - 2];
+                this.posY2 = array2[array2.length - 2];
+            }
+            else {
+                this.posY1 = array1[array1.length - 1];
+                this.posY2 = array2[array2.length - 1];
+            }
+        };
+        this.init = () => {
+            //?sets the height of the pipes
+            this.dimension();
+        };
+        this.render = () => {
+            //?top pipe
+            c.beginPath();
+            c.rect(this.x, this.y, this.width, this.height1);
+            c.fillStyle = this.color;
+            c.fill();
+            //?For dev purpose
+            // c.strokeStyle = this.strokeColor
+            //c.stroke();
+            c.closePath();
+            //?bottom pipe
+            c.beginPath();
+            c.rect(this.x, window.innerHeight - this.height2, this.width, this.height2);
+            c.fillStyle = this.color;
+            c.fill();
+            //?For dev purpose
+            //c.strokeStyle = this.strokeColor
+            //c.stroke();
+            c.closePath();
+        };
+        this.move = () => {
+            //?y cordinate remains same x cordinate is changed
+            if (this.x <= window.innerWidth / 2 + this.speed / 2 && this.x >= window.innerWidth / 2 - this.speed / 2) {
+                //?when the pipe crosses the center a new pipe is added
+                //?+5 and -5 are added because the x cordinate is decremented in intervals of the value of speed
+                insert = 1;
+            }
+            if ((this.x + this.width) + window.innerWidth / 2 < 0) {
+                deletePipe = 1;
+            }
+            this.x -= this.speed;
+            this.render();
+        };
+        this.collision = () => {
+            if ((this.x <= bird.x + bird.radius && this.x + this.width >= bird.x - bird.radius) && (window.innerHeight - this.height2 <= bird.y + bird.radius || this.height1 >= bird.y - bird.radius)) {
+                //?For dev purpose
+                //this.strokeColor = "red";
+                stopGame = 1;
+            }
+            else {
+                //?For dev purpose
+                //this.strokeColor = "black";
+            }
+        };
+        this.width = window.innerWidth / 10;
+        this.x = window.innerWidth - this.width;
+        this.y = 0;
+        this.gap = window.innerHeight / 3;
+        this.speed = 4;
+        //this.speed = 2;
+        this.color = "green";
+        //?For dev purpose
+        //this.strokeColor = "black";
+        this.init();
         this.render();
-    };
-    this.init();
-    this.render();
-};
+    }
+}
 //?The bird is created
 const bird = new Bird();
 //?Array which holds the pipes is created
@@ -120,11 +175,12 @@ const deletePipeFunc = () => {
     pipes.shift();
 };
 function animate() {
-    requestAnimationFrame(animate);
+    let startGame = requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
     bird.gravity();
-    for (var i = 0; i < numOfPipes; i++) {
+    for (let i = 0; i < numOfPipes; i++) {
         pipes[i].move();
+        pipes[i].collision();
         if (insert == 1) {
             newPipe();
             insert = 0;
@@ -134,6 +190,10 @@ function animate() {
             numOfPipes--;
             deletePipe = 0;
         }
+    }
+    if (stopGame == 1) {
+        bird.stopGame();
+        cancelAnimationFrame(startGame);
     }
 }
 animate();
