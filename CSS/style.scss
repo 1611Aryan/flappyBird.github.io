@@ -8,8 +8,25 @@
 body {
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url(./../Assets/swamp.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
 }
 
 canvas {
-    background: #bdbdbe;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    z-index: 2;
 }

@@ -6,8 +6,6 @@ const c = canvas.getContext('2d');
 let insert = 0;
 let deletePipe = 0;
 let stopGame = 0;
-let array1 = [];
-let array2 = [];
 window.addEventListener('resize', () => {
     location.reload();
     canvas.width = window.innerWidth;
@@ -24,12 +22,34 @@ window.addEventListener('mousemove', e => {
 class Bird {
     constructor() {
         this.render = () => {
-            //?A circle is drawn
+            // //?beak
+            // c.beginPath();
+            // c.moveTo(this.x + this.radius - 5, this.y + 15);
+            // c.lineTo(this.x + this.radius - 5, this.y - 10);
+            // c.lineTo(this.x + this.radius + 15, this.y + 5);
+            // c.closePath();
+            // c.fillStyle = 'black';
+            // c.fill();
+            //?body
             c.beginPath();
             c.arc(this.x, this.y, this.radius, 0, (Math.PI) * 2, false);
             c.fillStyle = this.color;
             c.fill();
             c.closePath();
+            // //?iris
+            // c.beginPath();
+            // c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
+            // c.strokeStyle = '#F1C27D';
+            // c.stroke();
+            // c.fillStyle = 'white';
+            // c.fill();
+            // c.closePath();
+            // //?pupil
+            // c.beginPath();
+            // c.arc(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 15, 0, (Math.PI) * 2, false);
+            // c.fillStyle = 'black';
+            // c.fill();
+            // c.closePath();
         };
         this.gravity = () => {
             //*the bird falls down
@@ -61,7 +81,7 @@ class Bird {
         if (window.innerHeight < 400) {
             this.radius = 20;
         }
-        this.color = "navy";
+        this.color = "#ffff89";
         //?g is used for gravity
         this.g = 2;
         this.diffucultyFactor = 0.0005;
@@ -76,17 +96,6 @@ class Pipe {
             //?Calculates the height of the pipes
             this.height1 = (window.innerHeight - this.gap) / ((Math.random() * 2) + 1);
             this.height2 = (window.innerHeight - this.gap) - this.height1;
-            array1.push(this.height1);
-            array2.push(this.height2);
-            // this.counter++;
-            if (array1[array1.length - 2] && array2[array2.length - 2]) {
-                this.posY1 = array1[array1.length - 2];
-                this.posY2 = array2[array2.length - 2];
-            }
-            else {
-                this.posY1 = array1[array1.length - 1];
-                this.posY2 = array2[array2.length - 1];
-            }
         };
         this.init = () => {
             //?sets the height of the pipes
@@ -142,7 +151,7 @@ class Pipe {
         this.gap = window.innerHeight / 3;
         this.speed = 4;
         //this.speed = 2;
-        this.color = "green";
+        this.color = "#013220";
         //?For dev purpose
         //this.strokeColor = "black";
         this.init();
@@ -161,6 +170,9 @@ window.addEventListener('keydown', (e) => {
         bird.jump();
     }
 });
+window.addEventListener('click', () => {
+    bird.jump();
+});
 window.addEventListener('touchend', (e) => {
     bird.jump();
 });
@@ -178,9 +190,9 @@ function animate() {
     let startGame = requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
     bird.gravity();
-    for (let i = 0; i < numOfPipes; i++) {
-        pipes[i].move();
-        pipes[i].collision();
+    pipes.forEach(pipe => {
+        pipe.move();
+        pipe.collision();
         if (insert == 1) {
             newPipe();
             insert = 0;
@@ -190,7 +202,7 @@ function animate() {
             numOfPipes--;
             deletePipe = 0;
         }
-    }
+    });
     if (stopGame == 1) {
         bird.stopGame();
         cancelAnimationFrame(startGame);
