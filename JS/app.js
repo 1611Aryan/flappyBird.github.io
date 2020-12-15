@@ -57,7 +57,7 @@ class Bird {
             c.closePath();
             //?iris
             c.beginPath();
-            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
+            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, 0, (Math.PI) * 2, false);
             c.strokeStyle = '#F1C27D';
             c.stroke();
             c.fillStyle = 'white';
@@ -71,9 +71,24 @@ class Bird {
             c.closePath();
             //? blink
             c.beginPath();
-            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
+            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, 0, (Math.PI) * 2, false);
             c.fillStyle = eyelid;
             c.fill();
+            c.closePath();
+            //?Feathers
+            //?1
+            c.beginPath();
+            c.arc(this.x - this.radius / 3, this.y + this.radius / 3, this.radius / 4, 0, (Math.PI), false);
+            c.strokeStyle = 'black';
+            c.lineWidth = 2;
+            c.stroke();
+            c.closePath();
+            //?2
+            c.beginPath();
+            c.arc(this.x - this.radius / 3 + this.radius * 2 / 4, this.y + this.radius / 3, this.radius / 4, 0, (Math.PI), false);
+            c.strokeStyle = 'black';
+            c.lineWidth = 2;
+            c.stroke();
             c.closePath();
         };
         this.gravity = () => {
