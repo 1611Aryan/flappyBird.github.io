@@ -11,6 +11,17 @@ window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 });
+let blink = 0;
+let eyelid = 'transparent';
+setInterval(() => {
+    blink++;
+    if (blink % 2 == 0) {
+        eyelid = 'transparent';
+    }
+    else {
+        eyelid = 'khaki';
+    }
+}, 600);
 const mouse = {
     x: null,
     y: null
@@ -22,34 +33,48 @@ window.addEventListener('mousemove', e => {
 class Bird {
     constructor() {
         this.render = () => {
+            // //?beak Shadow
+            c.beginPath();
+            c.moveTo(this.x + this.radius - 5, this.y + 20);
+            c.lineTo(this.x + this.radius - 5, this.y - 10);
+            c.lineTo(this.x + this.radius + 15, this.y + 7);
+            c.closePath();
+            c.fillStyle = 'mustard';
+            c.fill();
             // //?beak
-            // c.beginPath();
-            // c.moveTo(this.x + this.radius - 5, this.y + 15);
-            // c.lineTo(this.x + this.radius - 5, this.y - 10);
-            // c.lineTo(this.x + this.radius + 15, this.y + 5);
-            // c.closePath();
-            // c.fillStyle = 'black';
-            // c.fill();
+            c.beginPath();
+            c.moveTo(this.x + this.radius - 5, this.y + 15);
+            c.lineTo(this.x + this.radius - 5, this.y - 10);
+            c.lineTo(this.x + this.radius + 15, this.y + 5);
+            c.closePath();
+            c.fillStyle = 'khaki';
+            c.fill();
             //?body
             c.beginPath();
             c.arc(this.x, this.y, this.radius, 0, (Math.PI) * 2, false);
             c.fillStyle = this.color;
             c.fill();
             c.closePath();
-            // //?iris
-            // c.beginPath();
-            // c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
-            // c.strokeStyle = '#F1C27D';
-            // c.stroke();
-            // c.fillStyle = 'white';
-            // c.fill();
-            // c.closePath();
-            // //?pupil
-            // c.beginPath();
-            // c.arc(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 15, 0, (Math.PI) * 2, false);
-            // c.fillStyle = 'black';
-            // c.fill();
-            // c.closePath();
+            //?iris
+            c.beginPath();
+            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
+            c.strokeStyle = '#F1C27D';
+            c.stroke();
+            c.fillStyle = 'white';
+            c.fill();
+            c.closePath();
+            //?pupil
+            c.beginPath();
+            c.arc(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 15, 0, (Math.PI) * 2, false);
+            c.fillStyle = 'black';
+            c.fill();
+            c.closePath();
+            //? blink
+            c.beginPath();
+            c.ellipse(this.x + this.radius / 2, this.y - this.radius / 3, this.radius / 4, this.radius / 3, 0, (Math.PI) * 2, false);
+            c.fillStyle = eyelid;
+            c.fill();
+            c.closePath();
         };
         this.gravity = () => {
             //*the bird falls down
@@ -81,7 +106,7 @@ class Bird {
         if (window.innerHeight < 400) {
             this.radius = 20;
         }
-        this.color = "#ffff89";
+        this.color = "#ffd500";
         //?g is used for gravity
         this.g = 2;
         this.diffucultyFactor = 0.0005;
